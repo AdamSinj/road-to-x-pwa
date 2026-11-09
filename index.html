@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#080f22"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Road to X">
+<link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="icons/icon-192.png"><link rel="stylesheet" href="style.css">
+<title>Road to X — Concours 2027</title>
+</head>
+<body>
+<div class="app-shell">
+<header class="topbar"><div class="brand"><span class="fleur">⚜</span><div><strong>ROAD TO X</strong><small>CONCOURS CPGE 2027</small></div></div><div class="top-actions"><span id="syncStatus" class="sync-status">● Local</span><button class="icon-btn" id="settingsBtn" aria-label="Paramètres">⚙</button></div></header>
+<section class="hero"><div class="hero-kicker">ONE CHANCE · DISCIPLINE · EXCELLENCE</div><h1>Le temps se transforme<br>en préparation.</h1><div class="target">OBJECTIF · 12 AVRIL 2027 · 08:00</div><div class="countdown" id="countdown">---</div><div class="count-label">JOURS · HEURES · MINUTES · SECONDES</div></section>
+<div class="metrics"><article><span>TRAVAIL AUJOURD'HUI</span><b id="todayHours">0 h</b></article><article><span>SUJETS TRAITÉS</span><b id="solvedCount">0</b></article><article><span>OBJECTIFS ACTIFS</span><b id="activeGoals">0</b></article></div>
+<section class="timer-card"><div class="section-head"><div><small>CHRONOMÈTRE</small><h2>Session de travail</h2></div><span id="timerState" class="pill">À l'arrêt</span></div><div class="timer-controls"><select id="subject"><option>Mathématiques</option><option>Physique</option><option>Informatique</option><option>Sciences industrielles</option><option>Français</option><option>Langues</option></select><strong id="elapsed">00:00:00</strong><div class="timer-buttons"><button class="primary" id="startPause">Démarrer</button><button id="finish" class="secondary">Terminer</button></div></div></section>
+<nav class="tabs" id="tabs"><button class="active" data-page="home">Accueil</button><button data-page="calendar">Calendrier</button><button data-page="goals">Objectifs</button><button data-page="stats">Statistiques</button><button data-page="more">Plus</button></nav>
+<main id="page"></main>
+<footer>ROAD TO X <span>·</span> ONE CHANCE.</footer>
+</div>
+<dialog id="settingsDialog"><form method="dialog" id="settingsForm"><div class="dialog-head"><h2>Synchronisation</h2><button class="icon-btn" value="cancel">✕</button></div><p class="muted">Connecte le même projet Supabase que celui utilisé par la version PC V12. Tes données restent dans ta base personnelle.</p><label>URL du projet Supabase<input id="sbUrl" type="url" placeholder="https://xxxx.supabase.co"></label><label>Clé anon / publishable<input id="sbKey" type="text" placeholder="Clé publique Supabase"></label><label>Adresse e-mail<input id="sbEmail" type="email" autocomplete="username"></label><label>Mot de passe Supabase<input id="sbPassword" type="password" autocomplete="current-password"></label><button type="button" class="primary full" id="connectBtn">Se connecter et récupérer mes données</button><button type="button" class="secondary full" id="pushBtn">Envoyer mes données vers le cloud</button><p class="tiny muted">Le mot de passe n'est pas conservé. Le jeton de session est stocké sur cet appareil. Ne partage jamais ta clé ou ton mot de passe.</p></form></dialog>
+<dialog id="itemDialog"><form method="dialog" id="itemForm"><div class="dialog-head"><h2 id="itemTitle">Ajouter</h2><button class="icon-btn" value="cancel">✕</button></div><div id="itemFields"></div><button class="primary full" id="saveItem" value="default">Enregistrer</button></form></dialog>
+<script src="app.js"></script>
+</body></html>
