@@ -1,25 +1,13 @@
-ROAD TO X — PWA V2
+ROAD TO X — PWA V3
 
-Cette version reprend le format de données JSON de Road to X PC V12/V12.1 et utilise le même schéma Supabase.
+MISE A JOUR GITHUB PAGES
+1. Décompresser l’archive.
+2. Envoyer le CONTENU de ce dossier à la racine du dépôt GitHub road-to-x-pwa.
+3. Remplacer les fichiers existants (index.html, app.js, style.css, sw.js, manifest.json et icons).
+4. Commit changes sur la branche main. GitHub Pages publie ensuite les changements.
+5. Sur iPhone, ouvrir le site dans Safari. Si l’ancienne version persiste, supprimer les données de site Safari pour adamsinj.github.io puis rouvrir l’URL.
 
-INSTALLATION / MISE À JOUR iPhone
-1. Déployer le contenu de ce dossier sur le même hébergement HTTPS que ta PWA actuelle (remplacer les anciens fichiers).
-2. Sur iPhone, ouvrir l’URL dans Safari.
-3. Actualiser la page, puis Partager > Ajouter à l’écran d’accueil.
-4. Si l’ancienne icône reste sur l’écran d’accueil, supprimer l’ancien raccourci puis ajouter le nouveau.
-5. Ouvrir Réglages dans l’app et se connecter au même projet Supabase. Si le PC contient les données les plus récentes, faire d’abord PC → cloud, puis récupérer le cloud sur iPhone.
+SOMMEIL
+Le sommeil est maintenant manuel : appuyer sur « Je m’endors » puis sur « Je me réveille ». Les périodes sont réparties à minuit entre les jours concernés.
 
-FONCTIONS
-- Accueil avec rang général et rang humain.
-- Emploi du temps hebdomadaire et programme de colles.
-- Calendrier avec samedi rouge, aujourd’hui jaune, colles orange.
-- Objectifs, statistiques en trois vues, rangs, Dîn, hygiène, sujets et notes.
-- Chronomètre horodaté : le temps continue de s’écouler en arrière-plan et se recalcule au retour dans l’app.
-
-LIMITES iOS
-Une PWA ne peut pas créer de fenêtre flottante au-dessus des autres apps, ni afficher un chrono personnalisé persistant sur l’écran verrouillé. Il faut une application iOS native et une Live Activity (ActivityKit) pour cela. Les widgets iOS nécessitent également une extension WidgetKit native.
-
-STATISTIQUES
-- Composition quotidienne : axe fixe 0–24 h, segments normalisés si les données se chevauchent.
-- Camembert : uniquement les heures de travail enregistrées, ventilées par matière.
-- Ratio quotidien : échelle fixe 0–100 %.
+Les données restent stockées localement et se synchronisent avec Supabase si la connexion est configurée.
