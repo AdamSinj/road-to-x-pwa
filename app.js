@@ -67,7 +67,7 @@ function localDay(s){if(!s)return null;let d=new Date(String(s).slice(0,10)+'T12
 function dayGap(s){let d=localDay(s),n=localDay(dateISO());return d&&n?Math.max(0,Math.floor((n-d)/86400000)):null}
 function migrateV13(){
   data.subjects=[...new Set([...(data.subjects||[]),...SUBJECTS])];
-  data.app_version='V13';data.food_daily=data.food_daily||{};data.subject_tracking_start=data.subject_tracking_start||{};data.topic_review_log=data.topic_review_log||[];data.goal_progress_log=data.goal_progress_log||[];
+  data.app_version='V13.2';data.food_daily=data.food_daily||{};data.subject_tracking_start=data.subject_tracking_start||{};data.topic_review_log=data.topic_review_log||[];data.goal_progress_log=data.goal_progress_log||[];
   for(const subject of SUBJECTS)data.subject_tracking_start[subject]=data.subject_tracking_start[subject]||dateISO();
   // Reprise de la correction d'emploi du temps de la V12.6, pour que l'iPhone
   // arrive au même état même lorsqu'il part d'un ancien export local.
@@ -89,6 +89,37 @@ function migrateV13(){
     const unique=new Map();for(const x of rows){let k=[x.weekday,x.start,x.end,x.subject,x.teacher,x.room].join('|');unique.set(k,x)}data.timetable=[...unique.values()];data.rtx_timetable_v13=true;
   }
   for(const key of ['timetable','goals','topic_review_log'])for(let i=0;i<(data[key]||[]).length;i++){const row=data[key][i];if(row&&typeof row==='object')row._rtx_id=row._rtx_id||stableId(key,i,row)}
+  // V13.2 : migration séparée, car les anciennes données pouvaient déjà
+  // porter les marqueurs V12.6/V13 et conserver malgré tout l'EDT précédent.
+  if(!data.rtx_timetable_v132_schedule){
+    let source=(data.timetable||[]).filter(x=>x&&typeof x==='object'),clean=[];
+    for(const x of source){let d=Number(x.weekday),start=String(x.start||'00:00'),end=String(x.end||'00:00'),sub=String(x.subject||'').toLowerCase();
+      if(d>=5)continue;
+      if(sub.includes('allemand')||sub.includes('espagnol')||sub.includes('langues vivantes'))continue;
+      if(d===0)continue;
+      if(d===1&&(sub.includes('math')||sub.includes('physique'))){let [sh,sm]=start.split(':').map(Number),[eh,em]=end.split(':').map(Number);if(sh*60+sm<720&&eh*60+em>600&&sh*60+sm>=600)continue}
+      if(d===3&&start>='12:00')continue;
+      if(d===2&&start==='14:00'&&end==='18:00'&&sub.includes('sciences industrielles')&&sub.includes('physique')){let a={...x,end:'16:00'},b={...x,start:'16:00'};delete a._rtx_id;delete b._rtx_id;clean.push(a,b);continue}
+      if(d===4&&start>='12:00'&&(sub.includes('sciences industrielles')||sub.includes('tipe')||sub.includes('travail personnel encadré')))continue;
+      clean.push({...x});
+    }
+    const additions=[
+      {day:'Lundi',weekday:0,start:'08:00',end:'11:00',subject:'Mathématiques',teacher:'M. Mohan S.',room:'C281',group:'Classe'},
+      {day:'Lundi',weekday:0,start:'11:00',end:'13:00',subject:'Informatique',teacher:'M. Menet H.',room:'C281',group:''},
+      {day:'Lundi',weekday:0,start:'14:00',end:'16:00',subject:'Éducation physique et sportive',teacher:'M. Mazeau L.',room:'Gymnase',group:'Classe'},
+      {day:'Mardi',weekday:1,start:'10:00',end:'11:00',subject:'Mathématiques',teacher:'M. Mohan S.',room:'R307',group:'Groupe G1'},
+      {day:'Mardi',weekday:1,start:'10:00',end:'11:00',subject:'Physique',teacher:'M. Archambault P.',room:'R105',group:'Groupe G2'},
+      {day:'Mardi',weekday:1,start:'11:00',end:'12:00',subject:'Physique',teacher:'M. Archambault P.',room:'R105',group:'Groupe G1'},
+      {day:'Mardi',weekday:1,start:'11:00',end:'12:00',subject:'Mathématiques',teacher:'M. Mohan S.',room:'R307',group:'Groupe G2'},
+      {day:'Jeudi',weekday:3,start:'13:00',end:'14:30',subject:'Mathématiques',teacher:'M. Mohan S.',room:'C281',group:''},
+      {day:'Jeudi',weekday:3,start:'14:30',end:'16:00',subject:'Sciences industrielles',teacher:'M. Crespel V.',room:'C286',group:''},
+      {day:'Vendredi',weekday:4,start:'13:00',end:'15:00',subject:'TIPE / Travail personnel encadré',teacher:'M. Archambault P. / M. Crespel V.',room:'R015 / R413',group:'Oraux'}
+    ];
+    data.timetable=[...clean,...additions].sort((a,b)=>Number(a.weekday)-Number(b.weekday)||String(a.start).localeCompare(String(b.start))||String(a.subject).localeCompare(String(b.subject)));
+    for(const row of data.timetable)row._rtx_id=row._rtx_id||stableId('timetable',0,row);
+    data.rtx_timetable_v132_schedule=true;
+  }
+  data.app_version='V13.2';
 }
 migrateV13();localStorage.setItem('road_to_x_data',JSON.stringify(data));
 function subjectLastDate(subject){let dates=[];for(const x of data.work_sessions||[])if(x.subject===subject&&x.date)dates.push(x.date);for(const key of ['work','solved','grades','colles'])for(const x of data[key]||[])if(x.subject===subject&&(x.date||x.last_reviewed))dates.push(x.last_reviewed||x.date);if(data.timer?.running&&data.timer.subject===subject&&data.timer.started_at)dates.push(data.timer.started_at.slice(0,10));return dates.sort().at(-1)||null}
